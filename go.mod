@@ -40,6 +40,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dghubble/sling v1.4.0
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/vlab-research/trans v0.0.13
+	github.com/vlab-research/trans v0.0.14
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
