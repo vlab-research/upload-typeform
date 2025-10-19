@@ -339,6 +339,10 @@ func UpdateMessages(api *sling.Sling, id string, messages Messages) error {
 		return apiError
 	}
 
+	if httpResponse.StatusCode == 400 {
+		return fmt.Errorf("Error updating messages. Got 400 response. Messages may be too long. Original error: %s", apiError)
+	}
+
 	if httpResponse.StatusCode != 204 {
 		return apiError // may not exist?
 	}
