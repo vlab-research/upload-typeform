@@ -70,6 +70,33 @@ func TestBuildField_GetsChoicesFromMultipleChoiceQuestionWithoutLabels(t *testin
 	assert.Equal(t, f.Properties.Choices, []*trans.FieldChoice{{"", "yes", ""}, {"", "no", ""}})
 }
 
+func TestBuildField_TrimsSpacesFromChoicesWithoutLabels(t *testing.T) {
+	// Leading spaces
+	i, _ := BuildField([]string{"ref", "multiple_choice", "foo", "  yes\n  no", ""})
+	f := i.(*trans.Field)
+	assert.Equal(t, []*trans.FieldChoice{{"", "yes", ""}, {"", "no", ""}}, f.Properties.Choices)
+
+	// Trailing spaces
+	i, _ = BuildField([]string{"ref", "multiple_choice", "foo", "yes  \nno  ", ""})
+	f = i.(*trans.Field)
+	assert.Equal(t, []*trans.FieldChoice{{"", "yes", ""}, {"", "no", ""}}, f.Properties.Choices)
+
+	// Both leading and trailing spaces
+	i, _ = BuildField([]string{"ref", "multiple_choice", "foo", "  yes  \n  no  ", ""})
+	f = i.(*trans.Field)
+	assert.Equal(t, []*trans.FieldChoice{{"", "yes", ""}, {"", "no", ""}}, f.Properties.Choices)
+
+	// Preserves internal spaces
+	i, _ = BuildField([]string{"ref", "multiple_choice", "foo", "  hello world  \n  foo bar  ", ""})
+	f = i.(*trans.Field)
+	assert.Equal(t, []*trans.FieldChoice{{"", "hello world", ""}, {"", "foo bar", ""}}, f.Properties.Choices)
+
+	// Skips whitespace-only lines
+	i, _ = BuildField([]string{"ref", "multiple_choice", "foo", "yes\n   \nno", ""})
+	f = i.(*trans.Field)
+	assert.Equal(t, []*trans.FieldChoice{{"", "yes", ""}, {"", "no", ""}}, f.Properties.Choices)
+}
+
 func TestBuildField_GetsChoicesFromMultipleChoiceQuestionSkippingLetters(t *testing.T) {
 	i, _ := BuildField([]string{"ref", "multiple_choice", "foo", "A. yes\nC. no", ""})
 	f := i.(*trans.Field)

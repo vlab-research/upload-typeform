@@ -52,13 +52,17 @@ func ExtractParagraphs(text string) []string {
 
 func extractChoices(options string) []*trans.FieldChoice {
 	s := ExtractParagraphs(options)
-	choices := make([]*trans.FieldChoice, len(s))
-	for i, ss := range s {
-		choices[i] = &trans.FieldChoice{
-			ID:    "",
-			Label: ss,
-			Ref:   "",
+	choices := []*trans.FieldChoice{}
+	for _, ss := range s {
+		trimmed := strings.TrimSpace(ss)
+		if trimmed == "" {
+			continue
 		}
+		choices = append(choices, &trans.FieldChoice{
+			ID:    "",
+			Label: trimmed,
+			Ref:   "",
+		})
 	}
 	return choices
 }
